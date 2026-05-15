@@ -48,76 +48,96 @@ public class DashboardController : ApiControllerBase
         var netWorth = accountSummaries.Sum(a => a.Balance);
         var initialBalanceTotal = accounts.Sum(a => a.InitialBalance);
 
-        var transactions = await _db.Transactions
-            .Where(t => t.UserId == UserId)
-            .Include(t => t.Category)
+        // Monthly totals for the trend range (last 6 months including current) —
+        // ~36 rows max, computed entirely in SQL.
+        var monthlyAgg = await _db.Transactions
+            .Where(t => t.UserId == UserId && t.Date >= trendStart)
+            .GroupBy(t => new { t.Date.Year, t.Date.Month, t.Type })
+            .Select(g => new
+            {
+                g.Key.Year,
+                g.Key.Month,
+                g.Key.Type,
+                Total = g.Sum(t => t.Amount),
+            })
             .ToListAsync();
 
-        var monthTx = transactions.Where(t => t.Date >= monthStart && t.Date < monthEnd).ToList();
-        var monthIncome = monthTx.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-        var monthExpense = monthTx.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+        // Net worth at the end of each trend month needs the running total of
+        // every transaction before that month — fetch the pre-trend totals once.
+        var beforeTrendAgg = await _db.Transactions
+            .Where(t => t.UserId == UserId && t.Date < trendStart)
+            .GroupBy(t => t.Type)
+            .Select(g => new { Type = g.Key, Total = g.Sum(t => t.Amount) })
+            .ToListAsync();
+        var beforeTrendIncome = beforeTrendAgg.SingleOrDefault(x => x.Type == TransactionType.Income)?.Total ?? 0m;
+        var beforeTrendExpense = beforeTrendAgg.SingleOrDefault(x => x.Type == TransactionType.Expense)?.Total ?? 0m;
 
-        var lastMonthTx = transactions
-            .Where(t => t.Date >= lastMonthStart && t.Date < monthStart)
-            .ToList();
-        var lastMonthIncome = lastMonthTx
-            .Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
-        var lastMonthExpense = lastMonthTx
-            .Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+        // Category breakdown for this month — expenses only.
+        var categoryThisMonth = await _db.Transactions
+            .Where(t => t.UserId == UserId && t.Date >= monthStart && t.Date < monthEnd && t.Type == TransactionType.Expense)
+            .GroupBy(t => new { t.CategoryId, Name = t.Category!.Name, Color = t.Category.Color })
+            .Select(g => new { g.Key.CategoryId, g.Key.Name, g.Key.Color, Total = g.Sum(t => t.Amount) })
+            .ToListAsync();
 
-        var spendingByCategory = monthTx
-            .Where(t => t.Type == TransactionType.Expense)
-            .GroupBy(t => new { t.CategoryId, t.Category!.Name, t.Category.Color })
-            .Select(g => new CategorySpendDto(g.Key.CategoryId, g.Key.Name, g.Key.Color, g.Sum(t => t.Amount)))
+        // Same shape for last month — feeds the "top category changes" widget.
+        var categoryLastMonth = await _db.Transactions
+            .Where(t => t.UserId == UserId && t.Date >= lastMonthStart && t.Date < monthStart && t.Type == TransactionType.Expense)
+            .GroupBy(t => new { t.CategoryId, Name = t.Category!.Name, Color = t.Category.Color })
+            .Select(g => new { g.Key.CategoryId, g.Key.Name, g.Key.Color, Total = g.Sum(t => t.Amount) })
+            .ToListAsync();
+
+        decimal SumMonth(int year, int month, TransactionType type) => monthlyAgg
+            .Where(m => m.Year == year && m.Month == month && m.Type == type)
+            .Sum(m => m.Total);
+
+        var monthIncome = SumMonth(today.Year, today.Month, TransactionType.Income);
+        var monthExpense = SumMonth(today.Year, today.Month, TransactionType.Expense);
+        var lastMonthIncome = SumMonth(lastMonthStart.Year, lastMonthStart.Month, TransactionType.Income);
+        var lastMonthExpense = SumMonth(lastMonthStart.Year, lastMonthStart.Month, TransactionType.Expense);
+
+        var spendingByCategory = categoryThisMonth
+            .Select(c => new CategorySpendDto(c.CategoryId, c.Name, c.Color, c.Total))
             .OrderByDescending(c => c.Amount)
             .ToList();
 
-        // Income/expense per month for the last 6 months.
+        // 6-month income/expense trend.
         var trend = new List<MonthlyPointDto>();
         var netWorthTrend = new List<MonthlyNetWorthDto>();
         for (var i = 0; i < 6; i++)
         {
             var pointStart = trendStart.AddMonths(i);
-            var pointEnd = pointStart.AddMonths(1);
-            var pointTx = transactions.Where(t => t.Date >= pointStart && t.Date < pointEnd).ToList();
             trend.Add(new MonthlyPointDto(
                 pointStart.Year,
                 pointStart.Month,
-                pointTx.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount),
-                pointTx.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount)));
+                SumMonth(pointStart.Year, pointStart.Month, TransactionType.Income),
+                SumMonth(pointStart.Year, pointStart.Month, TransactionType.Expense)));
 
-            // Net worth at the end of this month (or today, for the current month).
-            // Transfers never change total net worth, so only transactions matter.
-            var cutoff = pointEnd.AddDays(-1) > today ? today : pointEnd.AddDays(-1);
-            var upTo = transactions.Where(t => t.Date <= cutoff).ToList();
-            var netWorthAtCutoff = initialBalanceTotal
-                + upTo.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount)
-                - upTo.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
-            netWorthTrend.Add(new MonthlyNetWorthDto(pointStart.Year, pointStart.Month, netWorthAtCutoff));
+            // Net worth at month end = initial balances + every income up to that point
+            // minus every expense up to that point. Transfers don't move total net worth.
+            var incomeUpTo = beforeTrendIncome + monthlyAgg
+                .Where(m => m.Type == TransactionType.Income &&
+                            (m.Year < pointStart.Year || (m.Year == pointStart.Year && m.Month <= pointStart.Month)))
+                .Sum(m => m.Total);
+            var expenseUpTo = beforeTrendExpense + monthlyAgg
+                .Where(m => m.Type == TransactionType.Expense &&
+                            (m.Year < pointStart.Year || (m.Year == pointStart.Year && m.Month <= pointStart.Month)))
+                .Sum(m => m.Total);
+            netWorthTrend.Add(new MonthlyNetWorthDto(
+                pointStart.Year, pointStart.Month,
+                initialBalanceTotal + incomeUpTo - expenseUpTo));
         }
 
-        // Top category movers: expense per category, this month vs last month.
-        var thisMonthByCat = monthTx
-            .Where(t => t.Type == TransactionType.Expense)
-            .GroupBy(t => t.CategoryId)
-            .ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
-        var lastMonthByCat = lastMonthTx
-            .Where(t => t.Type == TransactionType.Expense)
-            .GroupBy(t => t.CategoryId)
-            .ToDictionary(g => g.Key, g => g.Sum(t => t.Amount));
-        var categoryInfo = transactions
-            .Where(t => t.Category is not null)
-            .GroupBy(t => t.CategoryId)
-            .ToDictionary(g => g.Key, g => g.First().Category!);
-        var topCategoryChanges = thisMonthByCat.Keys
-            .Union(lastMonthByCat.Keys)
-            .Where(id => categoryInfo.ContainsKey(id))
-            .Select(id => new CategoryChangeDto(
-                id,
-                categoryInfo[id].Name,
-                categoryInfo[id].Color,
-                thisMonthByCat.GetValueOrDefault(id, 0m),
-                lastMonthByCat.GetValueOrDefault(id, 0m)))
+        // Top category movers: union of this/last month, ordered by absolute delta.
+        var byId = new Dictionary<int, (string Name, string Color, decimal This, decimal Last)>();
+        foreach (var c in categoryThisMonth)
+            byId[c.CategoryId] = (c.Name, c.Color, c.Total, 0m);
+        foreach (var c in categoryLastMonth)
+        {
+            byId.TryGetValue(c.CategoryId, out var existing);
+            byId[c.CategoryId] = (c.Name, c.Color, existing.This, c.Total);
+        }
+        var topCategoryChanges = byId
+            .Select(kv => new CategoryChangeDto(kv.Key, kv.Value.Name, kv.Value.Color, kv.Value.This, kv.Value.Last))
             .OrderByDescending(c => Math.Abs(c.ThisMonth - c.LastMonth))
             .Take(4)
             .ToList();
