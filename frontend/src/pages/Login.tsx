@@ -14,7 +14,7 @@ export function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (isAuthenticated) return <Navigate to="/" replace />
+  if (isAuthenticated) return <Navigate to="/app" replace />
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -22,7 +22,7 @@ export function Login() {
     setLoading(true)
     try {
       await login(email, password)
-      navigate('/')
+      navigate('/app')
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Não foi possível iniciar sessão.')
     } finally {

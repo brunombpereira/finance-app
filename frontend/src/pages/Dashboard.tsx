@@ -164,13 +164,13 @@ export function Dashboard() {
           </ol>
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
-              to="/transactions"
+              to="/app/transactions"
               className="rounded-lg bg-white px-3.5 py-2 text-sm font-medium text-slate-900 transition hover:bg-slate-100"
             >
               Lançar primeira transação
             </Link>
             <Link
-              to="/recurring"
+              to="/app/recurring"
               className="rounded-lg bg-white/10 px-3.5 py-2 text-sm font-medium text-white transition hover:bg-white/20"
             >
               Configurar ordenado recorrente
@@ -216,7 +216,7 @@ export function Dashboard() {
               As tuas contas
             </h2>
             <Link
-              to="/accounts"
+              to="/app/accounts"
               className="text-xs font-medium text-slate-400 transition hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-100"
             >
               Gerir
@@ -535,7 +535,7 @@ export function Dashboard() {
               Transações recentes
             </h2>
             <Link
-              to="/transactions"
+              to="/app/transactions"
               className="text-sm font-medium text-slate-500 transition hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
             >
               Ver todas
@@ -591,7 +591,7 @@ export function Dashboard() {
                 Orçamentos do mês
               </h2>
               <Link
-                to="/budgets"
+                to="/app/budgets"
                 className="text-xs font-medium text-slate-400 transition hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-100"
               >
                 Gerir
@@ -649,7 +649,7 @@ export function Dashboard() {
                 Metas de poupança
               </h2>
               <Link
-                to="/goals"
+                to="/app/goals"
                 className="text-xs font-medium text-slate-400 transition hover:text-slate-900 dark:text-slate-500 dark:hover:text-slate-100"
               >
                 Gerir

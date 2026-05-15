@@ -15,7 +15,7 @@ export function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  if (isAuthenticated) return <Navigate to="/" replace />
+  if (isAuthenticated) return <Navigate to="/app" replace />
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -23,7 +23,7 @@ export function Register() {
     setLoading(true)
     try {
       await register(email, password, displayName)
-      navigate('/')
+      navigate('/app')
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Não foi possível criar a conta.')
     } finally {

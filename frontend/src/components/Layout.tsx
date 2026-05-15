@@ -27,15 +27,15 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/accounts', label: 'Contas', icon: Landmark, end: false },
-  { to: '/transactions', label: 'Transações', icon: ArrowLeftRight, end: false },
-  { to: '/recurring', label: 'Recorrentes', icon: Repeat, end: false },
-  { to: '/budgets', label: 'Orçamentos', icon: Wallet, end: false },
-  { to: '/goals', label: 'Metas', icon: Target, end: false },
-  { to: '/investments', label: 'Investimentos', icon: TrendingUp, end: false },
-  { to: '/reports', label: 'Relatórios', icon: BarChart3, end: false },
-  { to: '/categories', label: 'Categorias', icon: Tags, end: false },
+  { to: '/app', label: 'Dashboard', icon: LayoutDashboard, end: true },
+  { to: '/app/accounts', label: 'Contas', icon: Landmark, end: false },
+  { to: '/app/transactions', label: 'Transações', icon: ArrowLeftRight, end: false },
+  { to: '/app/recurring', label: 'Recorrentes', icon: Repeat, end: false },
+  { to: '/app/budgets', label: 'Orçamentos', icon: Wallet, end: false },
+  { to: '/app/goals', label: 'Metas', icon: Target, end: false },
+  { to: '/app/investments', label: 'Investimentos', icon: TrendingUp, end: false },
+  { to: '/app/reports', label: 'Relatórios', icon: BarChart3, end: false },
+  { to: '/app/categories', label: 'Categorias', icon: Tags, end: false },
 ]
 
 function ThemeToggle({ className = '' }: { className?: string }) {
@@ -115,7 +115,7 @@ export function Layout() {
               <p className="truncate text-xs text-slate-400 dark:text-slate-500">{user?.email}</p>
             </div>
             <NavLink
-              to="/settings"
+              to="/app/settings"
               title="Definições"
               className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-200 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             >
@@ -143,7 +143,7 @@ export function Layout() {
           <div className="flex items-center gap-1">
             <ThemeToggle />
             <NavLink
-              to="/settings"
+              to="/app/settings"
               title="Definições"
               className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
             >

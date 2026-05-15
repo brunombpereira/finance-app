@@ -2,13 +2,14 @@ import { lazy, Suspense } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Toaster } from 'sonner'
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider, useAuth } from './context/AuthContext'
 import { ConfirmProvider } from './context/ConfirmContext'
 import { ThemeProvider } from './context/ThemeContext'
 import { Layout } from './components/Layout'
 import { ProtectedRoute } from './components/ProtectedRoute'
 
 // Route-level code splitting — keeps recharts and per-page code out of the entry bundle.
+const Landing = lazy(() => import('./pages/Landing').then((m) => ({ default: m.Landing })))
 const Login = lazy(() => import('./pages/Login').then((m) => ({ default: m.Login })))
 const Register = lazy(() => import('./pages/Register').then((m) => ({ default: m.Register })))
 const ForgotPassword = lazy(() =>
@@ -49,6 +50,12 @@ function RouteFallback() {
   )
 }
 
+// Root URL is public — authenticated users skip the landing and land on the dashboard.
+function HomeGate() {
+  const { isAuthenticated } = useAuth()
+  return isAuthenticated ? <Navigate to="/app" replace /> : <Landing />
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
@@ -59,11 +66,12 @@ export default function App() {
             <BrowserRouter>
               <Suspense fallback={<RouteFallback />}>
                 <Routes>
+                  <Route path="/" element={<HomeGate />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                   <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route element={<ProtectedRoute />}>
+                  <Route path="/app" element={<ProtectedRoute />}>
                     <Route element={<Layout />}>
                       <Route index element={<Dashboard />} />
                       <Route path="accounts" element={<Accounts />} />

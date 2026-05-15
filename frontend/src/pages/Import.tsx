@@ -115,7 +115,7 @@ export function Import() {
     try {
       const result = await importTransactions.mutateAsync(rows)
       toast.success(`${result.imported} transações importadas.`)
-      navigate('/transactions')
+      navigate('/app/transactions')
     } catch (err) {
       toast.error(err instanceof ApiError ? err.message : 'Não foi possível importar.')
     }

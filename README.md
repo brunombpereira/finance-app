@@ -1,10 +1,13 @@
 # Nexo Finance — Finanças Pessoais
 
+[![CI](https://github.com/brunombpereira/finance-app/actions/workflows/ci.yml/badge.svg)](https://github.com/brunombpereira/finance-app/actions/workflows/ci.yml)
+
 App web (instalável como PWA) para organizar e planear a vida financeira como uma app
 de banco: **contas com saldos** e **transferências** entre elas, registo de gastos e
 receitas, transações recorrentes, orçamentos mensais por categoria, metas de poupança
-(opcionalmente ligadas a uma conta) e um dashboard com património e gráficos de
-evolução. Tema claro/escuro.
+(opcionalmente ligadas a uma conta), **portfolio de investimentos** com preços ao vivo,
+**relatórios** com comparações período-a-período, e um dashboard com património e
+gráficos de evolução. Tema claro/escuro.
 
 ## Stack
 
