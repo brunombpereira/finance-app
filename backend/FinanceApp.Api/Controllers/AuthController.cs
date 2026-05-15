@@ -132,7 +132,7 @@ public class AuthController : ApiControllerBase
             var link = $"{frontendUrl}/reset-password?token={resetToken.Token}";
             await _emailSender.SendAsync(
                 user.Email!,
-                "Recuperar a tua password — FinanceApp",
+                "Recuperar a tua password — Nexo Finance",
                 $"Olá {user.DisplayName},\n\n" +
                 "Pediste para recuperar a tua password. Clica no link para definires uma " +
                 $"nova (válido 1 hora):\n{link}\n\nSe não foste tu, ignora este email.");

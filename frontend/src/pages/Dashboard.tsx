@@ -144,7 +144,7 @@ export function Dashboard() {
 
       {isNewUser && (
         <Card className="bg-slate-900 p-6 text-white">
-          <h2 className="text-lg font-semibold">Bem-vindo ao FinanceApp 👋</h2>
+          <h2 className="text-lg font-semibold">Bem-vindo à Nexo Finance 👋</h2>
           <p className="mt-1 max-w-2xl text-sm text-slate-300">
             Ainda não tens dados. Em três passos começas a ver o teu dinheiro a fazer sentido:
           </p>
@@ -414,6 +414,12 @@ export function Dashboard() {
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={netWorthData} margin={{ left: -16, right: 8, top: 4 }}>
+                <defs>
+                  <linearGradient id="netWorthLine" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0" stopColor="#06b6d4" />
+                    <stop offset="1" stopColor="#d946ef" />
+                  </linearGradient>
+                </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
                 <XAxis
                   dataKey="name"
@@ -434,9 +440,9 @@ export function Dashboard() {
                 <Line
                   type="monotone"
                   dataKey="Património"
-                  stroke="#6366f1"
+                  stroke="url(#netWorthLine)"
                   strokeWidth={2.5}
-                  dot={{ r: 3 }}
+                  dot={{ r: 3, fill: '#a21caf' }}
                   activeDot={{ r: 5, strokeWidth: 2 }}
                 />
               </LineChart>
@@ -660,10 +666,10 @@ export function Dashboard() {
                       key={g.id}
                       className="group relative -mx-2 rounded-lg px-2 py-1.5 transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-700/50"
                     >
-                      <span className="absolute left-0 top-1/2 h-7 w-1 origin-center -translate-y-1/2 scale-y-0 rounded-r-full bg-indigo-500 opacity-0 transition-all duration-200 group-hover:scale-y-100 group-hover:opacity-100" />
+                      <span className="absolute left-0 top-1/2 h-7 w-1 origin-center -translate-y-1/2 scale-y-0 rounded-r-full bg-cyan-500 opacity-0 transition-all duration-200 group-hover:scale-y-100 group-hover:opacity-100" />
                       <div className="flex items-center justify-between text-xs">
                         <span className="flex items-center gap-1.5 font-medium text-slate-600 dark:text-slate-300">
-                          <Target size={13} className="text-indigo-500" /> {g.name}
+                          <Target size={13} className="text-fuchsia-500" /> {g.name}
                         </span>
                         <span className="text-slate-400 dark:text-slate-500">
                           {pct.toFixed(0)}%
@@ -671,7 +677,7 @@ export function Dashboard() {
                       </div>
                       <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
                         <div
-                          className="h-full rounded-full bg-indigo-500 transition-all duration-300"
+                          className="h-full rounded-full bg-cyan-500 transition-all duration-300"
                           style={{ width: `${Math.min(pct, 100)}%` }}
                         />
                       </div>

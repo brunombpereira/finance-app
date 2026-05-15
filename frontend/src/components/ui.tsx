@@ -61,7 +61,7 @@ export function StatCard({
     },
     accent: {
       text: 'text-slate-900 dark:text-slate-100',
-      chip: 'bg-indigo-50 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400',
+      chip: 'bg-fuchsia-50 text-fuchsia-600 dark:bg-fuchsia-500/15 dark:text-fuchsia-400',
     },
   }
   const t = tones[tone]
@@ -82,13 +82,15 @@ export function StatCard({
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'brand'
 }
 
 export function Button({ variant = 'primary', className = '', ...props }: ButtonProps) {
   const styles: Record<string, string> = {
     primary:
       'bg-slate-900 text-white hover:bg-slate-700 dark:bg-slate-100 dark:text-slate-900 dark:hover:bg-white',
+    brand:
+      'bg-gradient-to-r from-cyan-500 to-fuchsia-500 text-white shadow-sm transition-opacity hover:opacity-95',
     secondary:
       'bg-white text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-200 dark:ring-slate-600 dark:hover:bg-slate-700',
     danger: 'bg-red-600 text-white hover:bg-red-500',

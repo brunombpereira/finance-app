@@ -9,8 +9,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
       manifest: {
-        name: 'FinanceApp — Finanças Pessoais',
-        short_name: 'FinanceApp',
+        name: 'Nexo Finance — Finanças Pessoais',
+        short_name: 'Nexo Finance',
         description: 'Organiza e planeia a tua vida financeira: gastos, orçamentos e metas.',
         theme_color: '#0f172a',
         background_color: '#0f172a',

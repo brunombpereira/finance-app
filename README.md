@@ -1,4 +1,4 @@
-# FinanceApp — Finanças Pessoais
+# Nexo Finance — Finanças Pessoais
 
 App web (instalável como PWA) para organizar e planear a vida financeira como uma app
 de banco: **contas com saldos** e **transferências** entre elas, registo de gastos e

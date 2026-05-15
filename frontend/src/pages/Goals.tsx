@@ -62,7 +62,7 @@ function GoalCard({
       {/* Accent bar — grows in on hover */}
       <span
         className={`absolute left-0 top-1/2 h-14 w-1 origin-center -translate-y-1/2 scale-y-0 rounded-r-full opacity-0 transition-all duration-200 group-hover:scale-y-100 group-hover:opacity-100 ${
-          done ? 'bg-emerald-500' : 'bg-indigo-500'
+          done ? 'bg-emerald-500' : 'bg-cyan-500'
         }`}
       />
       <div className="flex items-start justify-between">
@@ -71,7 +71,7 @@ function GoalCard({
             className={`grid h-11 w-11 place-items-center rounded-full transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6 ${
               done
                 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400'
-                : 'bg-indigo-100 text-indigo-600 dark:bg-indigo-500/15 dark:text-indigo-400'
+                : 'bg-fuchsia-100 text-fuchsia-600 dark:bg-fuchsia-500/15 dark:text-fuchsia-400'
             }`}
           >
             <Target size={20} />
@@ -114,7 +114,7 @@ function GoalCard({
       <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
         <div
           className={`h-full rounded-full transition-all duration-300 ${
-            done ? 'bg-emerald-500' : 'bg-indigo-500'
+            done ? 'bg-emerald-500' : 'bg-cyan-500'
           }`}
           style={{ width: `${Math.min(pct, 100)}%` }}
         />
@@ -124,7 +124,7 @@ function GoalCard({
       </p>
 
       {goal.accountName && (
-        <p className="mt-2 flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400">
+        <p className="mt-2 flex items-center gap-1 text-xs text-fuchsia-600 dark:text-fuchsia-400">
           <Link2 size={12} /> Ligada a {goal.accountName}
         </p>
       )}
@@ -275,7 +275,7 @@ export function Goals() {
           </div>
           <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
             <div
-              className="h-full rounded-full bg-indigo-500 transition-all"
+              className="h-full rounded-full bg-cyan-500 transition-all"
               style={{
                 width: `${totalTarget > 0 ? Math.min((totalSaved / totalTarget) * 100, 100) : 0}%`,
               }}
