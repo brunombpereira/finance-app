@@ -77,6 +77,12 @@ builder.Services.AddHttpClient<IPriceProvider, YahooFinancePriceProvider>(client
     client.Timeout = TimeSpan.FromSeconds(8);
 });
 
+builder.Services.AddHttpClient<IBankingProvider, GoCardlessBankingProvider>(client =>
+{
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? ["http://localhost:5173"];
 builder.Services.AddCors(options =>

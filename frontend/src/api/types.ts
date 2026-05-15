@@ -288,3 +288,31 @@ export interface ReportSummary {
   topExpenses: CategoryAmount[]
   topIncome: CategoryAmount[]
 }
+
+export interface Institution {
+  id: string
+  name: string
+  logo: string | null
+  countries: string[]
+}
+
+export interface BankConnection {
+  id: number
+  institutionId: string
+  institutionName: string
+  institutionLogo: string | null
+  status: string
+  linkedAccountCount: number
+  createdAt: string
+  linkedAt: string | null
+  lastSyncedAt: string | null
+}
+
+export interface BankingStatus {
+  configured: boolean
+}
+
+export interface RequisitionCreated {
+  requisitionId: string
+  link: string
+}

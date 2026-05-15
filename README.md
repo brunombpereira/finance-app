@@ -166,5 +166,7 @@ Variáveis de ambiente (o blueprint trata destas):
 | `PORT` | injetada pelo Render; a app liga-se a ela automaticamente |
 | `SENTRY_DSN` | (opcional) DSN do projeto Sentry — sem ela, monitorização desativada |
 | `VITE_SENTRY_DSN` | (opcional, build-time do frontend) DSN do Sentry para o cliente |
+| `GOCARDLESS_SECRET_ID` | (opcional) Open Banking via GoCardless Bank Account Data |
+| `GOCARDLESS_SECRET_KEY` | (opcional) chave secreta GoCardless |
 
 Health check: `GET /health`.

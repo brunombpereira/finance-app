@@ -10,9 +10,13 @@ import type {
   DashboardSummary,
   InvestmentInput,
   InvestmentsSummary,
+  BankConnection,
+  BankingStatus,
+  Institution,
   PagedTransactions,
   RecurringTransaction,
   ReportSummary,
+  RequisitionCreated,
   RecurringTransactionInput,
   SavingsGoal,
   SavingsGoalInput,
@@ -306,6 +310,62 @@ export function useDeleteInvestment() {
       qc.invalidateQueries({ queryKey: ['investments'] })
       qc.invalidateQueries({ queryKey: ['dashboard'] })
     },
+  })
+}
+
+/* ---------- Banking (Open Banking via GoCardless) ---------- */
+
+export function useBankingStatus() {
+  return useQuery({
+    queryKey: ['banking', 'status'],
+    queryFn: () => api<BankingStatus>('/banking/status'),
+    staleTime: 5 * 60 * 1000,
+  })
+}
+
+export function useInstitutions(country: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ['banking', 'institutions', country],
+    queryFn: () => api<Institution[]>(`/banking/institutions?country=${country}`),
+    enabled,
+    staleTime: 30 * 60 * 1000,
+  })
+}
+
+export function useBankConnections() {
+  return useQuery({
+    queryKey: ['banking', 'connections'],
+    queryFn: () => api<BankConnection[]>('/banking/connections'),
+  })
+}
+
+export function useCreateRequisition() {
+  return useMutation({
+    mutationFn: (institutionId: string) =>
+      api<RequisitionCreated>('/banking/requisitions', {
+        method: 'POST',
+        body: { institutionId },
+      }),
+  })
+}
+
+export function useFinalizeBankConnection() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (requisitionId: string) =>
+      api<BankConnection>('/banking/finalize', {
+        method: 'POST',
+        body: { requisitionId },
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['banking', 'connections'] }),
+  })
+}
+
+export function useDeleteBankConnection() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<void>(`/banking/connections/${id}`, { method: 'DELETE' }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['banking', 'connections'] }),
   })
 }
 

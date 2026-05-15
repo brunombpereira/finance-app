@@ -17,4 +17,5 @@ public class AppUser : IdentityUser
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
     public ICollection<Investment> Investments { get; set; } = new List<Investment>();
+    public ICollection<BankConnection> BankConnections { get; set; } = new List<BankConnection>();
 }

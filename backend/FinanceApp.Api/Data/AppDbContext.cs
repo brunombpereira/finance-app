@@ -18,6 +18,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
     public DbSet<Investment> Investments => Set<Investment>();
+    public DbSet<BankConnection> BankConnections => Set<BankConnection>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -151,6 +152,15 @@ public class AppDbContext : IdentityDbContext<AppUser>
                 .HasForeignKey(i => i.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
             e.HasIndex(i => new { i.UserId, i.Symbol });
+        });
+
+        builder.Entity<BankConnection>(e =>
+        {
+            e.HasOne(c => c.User)
+                .WithMany(u => u.BankConnections)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(c => new { c.UserId, c.RequisitionId });
         });
     }
 }
