@@ -164,5 +164,7 @@ Variáveis de ambiente (o blueprint trata destas):
 | `Jwt__Key` | gerada pelo Render |
 | `ASPNETCORE_ENVIRONMENT` | `Production` |
 | `PORT` | injetada pelo Render; a app liga-se a ela automaticamente |
+| `SENTRY_DSN` | (opcional) DSN do projeto Sentry — sem ela, monitorização desativada |
+| `VITE_SENTRY_DSN` | (opcional, build-time do frontend) DSN do Sentry para o cliente |
 
 Health check: `GET /health`.

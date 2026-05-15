@@ -16,6 +16,21 @@ var port = Environment.GetEnvironmentVariable("PORT");
 if (!string.IsNullOrWhiteSpace(port))
     builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
+// Sentry is opt-in via env var / config — keeps local runs free of network calls.
+var sentryDsn = builder.Configuration["Sentry:Dsn"]
+    ?? Environment.GetEnvironmentVariable("SENTRY_DSN");
+if (!string.IsNullOrWhiteSpace(sentryDsn))
+{
+    builder.WebHost.UseSentry(o =>
+    {
+        o.Dsn = sentryDsn;
+        o.Environment = builder.Environment.EnvironmentName;
+        o.TracesSampleRate = 0.1;
+        // Don't ship PII (request bodies, headers with auth).
+        o.SendDefaultPii = false;
+    });
+}
+
 builder.Services.AddControllers()
     .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
