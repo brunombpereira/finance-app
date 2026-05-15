@@ -1,0 +1,11 @@
+**/bin
+**/obj
+**/node_modules
+frontend/dist
+frontend/dev-dist
+**/.git
+**/.vs
+**/.vscode
+**/.idea
+backend/FinanceApp.Tests
+backend/FinanceApp.Api/appsettings.Development.json

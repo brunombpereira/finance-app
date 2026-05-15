@@ -1,0 +1,24 @@
+# Render Blueprint — provisions the app + database in one go.
+# In Render: New → Blueprint → connect this repo. Render reads this file.
+services:
+  - type: web
+    name: finance-app
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      # Postgres connection string, injected from the database below.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finance-app-db
+          property: connectionString
+      # JWT signing key — Render generates a strong random value.
+      - key: Jwt__Key
+        generateValue: true
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+
+databases:
+  - name: finance-app-db
+    plan: free

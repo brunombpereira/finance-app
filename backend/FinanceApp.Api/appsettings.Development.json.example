@@ -1,0 +1,14 @@
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=/var/run/postgresql;Database=financeapp_dev;Username=bruno"
+  },
+  "Jwt": {
+    "Key": "GERAR-COM: openssl rand -base64 48"
+  }
+}
