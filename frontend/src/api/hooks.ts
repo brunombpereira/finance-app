@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from './client'
 import type {
   Account,
@@ -376,6 +376,11 @@ export function useReports(from: string, to: string) {
     queryKey: ['reports', from, to],
     queryFn: () => api<ReportSummary>(`/reports?from=${from}&to=${to}`),
     enabled: Boolean(from) && Boolean(to),
+    // Keep the previous range's data on screen while the new range loads —
+    // avoids the spinner blanking the page on every preset switch.
+    placeholderData: keepPreviousData,
+    // The data only changes when the user adds/edits a transaction.
+    staleTime: 60_000,
   })
 }
 

@@ -191,7 +191,7 @@ export function Reports() {
   // Default to "Últimos 3 meses".
   const [range, setRange] = useState({ from: presets[2].from, to: presets[2].to })
 
-  const { data, isLoading } = useReports(range.from, range.to)
+  const { data, isLoading, isFetching } = useReports(range.from, range.to)
 
   const activePreset = presets.find((p) => p.from === range.from && p.to === range.to)
   const savingsRate =
@@ -205,7 +205,18 @@ export function Reports() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Relatórios" subtitle="Análise das tuas finanças por período" />
+      <PageHeader
+        title="Relatórios"
+        subtitle="Análise das tuas finanças por período"
+        action={
+          isFetching && data ? (
+            <span className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-500">
+              <span className="h-3 w-3 animate-spin rounded-full border-2 border-slate-300 border-t-cyan-500" />
+              A atualizar…
+            </span>
+          ) : undefined
+        }
+      />
 
       <Card className="p-4">
         <div className="flex flex-wrap items-end gap-3">
