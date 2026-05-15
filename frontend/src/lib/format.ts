@@ -7,6 +7,23 @@ export function formatMoney(value: number): string {
   return currencyFormatter.format(value)
 }
 
+// Cache per-currency formatters — `Intl.NumberFormat` construction isn't free.
+const currencyFormatters = new Map<string, Intl.NumberFormat>()
+
+export function formatMoneyIn(currency: string, value: number): string {
+  let fmt = currencyFormatters.get(currency)
+  if (!fmt) {
+    try {
+      fmt = new Intl.NumberFormat('pt-PT', { style: 'currency', currency })
+    } catch {
+      // Unknown ISO code — fall back to plain number plus the raw code.
+      return `${value.toFixed(2)} ${currency}`
+    }
+    currencyFormatters.set(currency, fmt)
+  }
+  return fmt.format(value)
+}
+
 const dateFormatter = new Intl.DateTimeFormat('pt-PT', {
   day: '2-digit',
   month: 'short',

@@ -8,6 +8,8 @@ import type {
   Category,
   CategoryInput,
   DashboardSummary,
+  InvestmentInput,
+  InvestmentsSummary,
   PagedTransactions,
   RecurringTransaction,
   RecurringTransactionInput,
@@ -267,6 +269,42 @@ export function useDeleteRecurring() {
   return useMutation({
     mutationFn: (id: number) => api<void>(`/recurring/${id}`, { method: 'DELETE' }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['recurring'] }),
+  })
+}
+
+/* ---------- Investments ---------- */
+
+export function useInvestments() {
+  return useQuery({
+    queryKey: ['investments'],
+    queryFn: () => api<InvestmentsSummary>('/investments'),
+    // Live prices change — let the query refetch when the user returns to the tab.
+    refetchOnWindowFocus: true,
+  })
+}
+
+export function useSaveInvestment() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (input: InvestmentInput & { id?: number }) =>
+      input.id
+        ? api(`/investments/${input.id}`, { method: 'PUT', body: input })
+        : api('/investments', { method: 'POST', body: input }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['investments'] })
+      qc.invalidateQueries({ queryKey: ['dashboard'] })
+    },
+  })
+}
+
+export function useDeleteInvestment() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: number) => api<void>(`/investments/${id}`, { method: 'DELETE' }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['investments'] })
+      qc.invalidateQueries({ queryKey: ['dashboard'] })
+    },
   })
 }
 

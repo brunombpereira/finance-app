@@ -10,6 +10,7 @@ import {
   Sun,
   Tags,
   Target,
+  TrendingUp,
   Wallet,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -31,6 +32,7 @@ const navItems: NavItem[] = [
   { to: '/recurring', label: 'Recorrentes', icon: Repeat, end: false },
   { to: '/budgets', label: 'Orçamentos', icon: Wallet, end: false },
   { to: '/goals', label: 'Metas', icon: Target, end: false },
+  { to: '/investments', label: 'Investimentos', icon: TrendingUp, end: false },
   { to: '/categories', label: 'Categorias', icon: Tags, end: false },
 ]
 

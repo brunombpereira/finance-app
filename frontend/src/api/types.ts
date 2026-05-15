@@ -221,3 +221,42 @@ export interface TransactionFilters {
   type?: TransactionType
   search?: string
 }
+
+export interface Investment {
+  id: number
+  symbol: string
+  name: string
+  quantity: number
+  avgCost: number
+  currency: string
+  notes: string | null
+  createdAt: string
+  currentPrice: number | null
+  currentValue: number | null
+  costBasis: number
+  profitLoss: number | null
+  profitLossPct: number | null
+  priceFetchedAt: string | null
+}
+
+export interface InvestmentInput {
+  symbol: string
+  name: string
+  quantity: number
+  avgCost: number
+  currency: string
+  notes: string | null
+}
+
+export interface CurrencyTotal {
+  currency: string
+  costBasis: number
+  currentValue: number
+  profitLoss: number
+  profitLossPct: number
+}
+
+export interface InvestmentsSummary {
+  items: Investment[]
+  totals: CurrencyTotal[]
+}

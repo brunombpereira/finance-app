@@ -55,6 +55,12 @@ builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<RecurringService>();
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddSingleton<IEmailSender, LoggingEmailSender>();
+builder.Services.AddHttpClient<IPriceProvider, YahooFinancePriceProvider>(client =>
+{
+    // Yahoo Finance rejects requests without a UA.
+    client.DefaultRequestHeaders.Add("User-Agent", "NexoFinance/1.0");
+    client.Timeout = TimeSpan.FromSeconds(8);
+});
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? ["http://localhost:5173"];
