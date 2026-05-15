@@ -15,7 +15,10 @@ export default defineConfig({
         theme_color: '#0f172a',
         background_color: '#0f172a',
         display: 'standalone',
-        start_url: '/',
+        // Installed app skips the public landing — opens straight into /app
+        // (which redirects to /login if the session is gone).
+        start_url: '/app',
+        scope: '/',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'pwa-512.png', sizes: '512x512', type: 'image/png' },
