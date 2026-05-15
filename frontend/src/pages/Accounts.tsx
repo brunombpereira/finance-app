@@ -263,7 +263,7 @@ export function Accounts() {
                     {ACCOUNT_TYPE_LABELS[a.type]}
                   </p>
                 </div>
-                <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100">
+                <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 max-md:translate-x-0 max-md:opacity-100">
                   <button
                     onClick={() => openEditAccount(a)}
                     className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-100"
@@ -324,7 +324,7 @@ export function Accounts() {
                 </span>
                 <button
                   onClick={() => removeTransfer(t.id)}
-                  className="rounded-lg p-2 text-slate-400 opacity-0 transition hover:bg-red-100 hover:text-red-600 group-hover:opacity-100 dark:hover:bg-red-500/20 dark:hover:text-red-400"
+                  className="rounded-lg p-2 text-slate-400 opacity-0 transition hover:bg-red-100 hover:text-red-600 group-hover:opacity-100 max-md:opacity-100 dark:hover:bg-red-500/20 dark:hover:text-red-400"
                   title="Apagar"
                 >
                   <Trash2 size={16} />

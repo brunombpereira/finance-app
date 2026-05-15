@@ -216,7 +216,7 @@ export function Recurring() {
                     Dia {r.dayOfMonth} de cada mês · {r.categoryName}
                   </p>
                 </div>
-                <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100">
+                <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 max-md:translate-x-0 max-md:opacity-100">
                   <button
                     onClick={() => openEdit(r)}
                     className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-100"

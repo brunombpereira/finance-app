@@ -1,10 +1,12 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import {
   ArrowLeftRight,
   BarChart3,
   Landmark,
   LayoutDashboard,
   LogOut,
+  Menu,
   Moon,
   Repeat,
   Settings,
@@ -13,6 +15,7 @@ import {
   Target,
   TrendingUp,
   Wallet,
+  X,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -38,6 +41,16 @@ const navItems: NavItem[] = [
   { to: '/app/categories', label: 'Categorias', icon: Tags, end: false },
 ]
 
+// The four most-used tabs get a fixed slot in the mobile bottom nav.
+// Everything else lives behind the "Mais" sheet.
+const primaryMobileItems: NavItem[] = [
+  navItems[0],   // Dashboard
+  navItems[2],   // Transações
+  navItems[4],   // Orçamentos
+  navItems[5],   // Metas
+]
+const secondaryMobileItems: NavItem[] = navItems.filter((n) => !primaryMobileItems.includes(n))
+
 function ThemeToggle({ className = '' }: { className?: string }) {
   const { theme, toggleTheme } = useTheme()
   return (
@@ -55,8 +68,75 @@ function ThemeToggle({ className = '' }: { className?: string }) {
   )
 }
 
+function MoreSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
+  // Close when the user navigates into a secondary route.
+  if (!open) return null
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end bg-slate-900/40 md:hidden dark:bg-black/60"
+      onClick={onClose}
+    >
+      <div
+        className="w-full rounded-t-2xl bg-white p-4 pb-8 shadow-xl dark:bg-slate-900 dark:ring-1 dark:ring-slate-700"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">Mais</h2>
+          <button
+            onClick={onClose}
+            aria-label="Fechar"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700"
+          >
+            <X size={18} />
+          </button>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {secondaryMobileItems.map(({ to, label, icon: Icon, end }) => (
+            <NavLink
+              key={to}
+              to={to}
+              end={end}
+              onClick={onClose}
+              className={({ isActive }) =>
+                `flex flex-col items-center gap-1 rounded-xl p-3 text-[11px] font-medium transition ${
+                  isActive
+                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-300'
+                    : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
+                }`
+              }
+            >
+              <Icon size={20} />
+              <span className="text-center leading-tight">{label}</span>
+            </NavLink>
+          ))}
+          <NavLink
+            to="/app/settings"
+            onClick={onClose}
+            className={({ isActive }) =>
+              `flex flex-col items-center gap-1 rounded-xl p-3 text-[11px] font-medium transition ${
+                isActive
+                  ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-500/15 dark:text-cyan-300'
+                  : 'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800'
+              }`
+            }
+          >
+            <Settings size={20} />
+            <span className="text-center leading-tight">Definições</span>
+          </NavLink>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function Layout() {
   const { user, logout } = useAuth()
+  const [moreOpen, setMoreOpen] = useState(false)
+  const location = useLocation()
+
+  const isOnSecondaryRoute = secondaryMobileItems.some((n) =>
+    n.end ? location.pathname === n.to : location.pathname.startsWith(n.to),
+  ) || location.pathname.startsWith('/app/settings')
 
   return (
     <div className="flex min-h-full bg-slate-100 dark:bg-slate-950">
@@ -81,7 +161,6 @@ export function Layout() {
             >
               {({ isActive }) => (
                 <>
-                  {/* Accent bar — grows in on hover for inactive items */}
                   <span
                     className={`absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-cyan-500 transition-all duration-200 ${
                       isActive
@@ -142,13 +221,6 @@ export function Layout() {
           <Logo />
           <div className="flex items-center gap-1">
             <ThemeToggle />
-            <NavLink
-              to="/app/settings"
-              title="Definições"
-              className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
-            >
-              <Settings size={20} />
-            </NavLink>
             <button
               onClick={logout}
               className="group/btn rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
@@ -166,9 +238,9 @@ export function Layout() {
           <Outlet />
         </main>
 
-        {/* Bottom nav — mobile */}
-        <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-slate-200 bg-white md:hidden dark:border-slate-800 dark:bg-slate-900">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
+        {/* Bottom nav — mobile (4 primary + Mais) */}
+        <nav className="fixed bottom-0 left-0 right-0 z-40 flex border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden dark:border-slate-800 dark:bg-slate-900">
+          {primaryMobileItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
@@ -185,7 +257,20 @@ export function Layout() {
               {label}
             </NavLink>
           ))}
+          <button
+            onClick={() => setMoreOpen(true)}
+            className={`flex flex-1 flex-col items-center gap-0.5 py-2 text-[11px] font-medium transition ${
+              isOnSecondaryRoute || moreOpen
+                ? 'text-cyan-600 dark:text-cyan-400'
+                : 'text-slate-400 dark:text-slate-500'
+            }`}
+          >
+            <Menu size={20} />
+            Mais
+          </button>
         </nav>
+
+        <MoreSheet open={moreOpen} onClose={() => setMoreOpen(false)} />
       </div>
     </div>
   )

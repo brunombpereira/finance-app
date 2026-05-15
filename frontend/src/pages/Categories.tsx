@@ -69,7 +69,7 @@ function Section({ label, items, onCreate, onEdit, onDelete }: SectionProps) {
               <span className="min-w-0 flex-1 truncate text-sm font-medium text-slate-800 transition-transform duration-200 group-hover:translate-x-0.5 dark:text-slate-200">
                 {c.name}
               </span>
-              <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100">
+              <div className="flex translate-x-2 gap-0.5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 max-md:translate-x-0 max-md:opacity-100">
                 <button
                   onClick={() => onEdit(c)}
                   className="rounded-lg p-1.5 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-700 dark:hover:text-slate-100"
