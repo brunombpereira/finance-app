@@ -29,7 +29,9 @@ builder.Services
         options.Password.RequireUppercase = false;
         options.User.RequireUniqueEmail = true;
     })
-    .AddEntityFrameworkStores<AppDbContext>();
+    .AddEntityFrameworkStores<AppDbContext>()
+    // Needed for GeneratePasswordResetTokenAsync (password reset flow).
+    .AddDefaultTokenProviders();
 
 var jwt = builder.Configuration.GetSection("Jwt");
 builder.Services
@@ -52,6 +54,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<RecurringService>();
 builder.Services.AddScoped<AccountService>();
+builder.Services.AddSingleton<IEmailSender, LoggingEmailSender>();
 
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()
     ?? ["http://localhost:5173"];

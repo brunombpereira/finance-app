@@ -14,4 +14,6 @@ public class AppUser : IdentityUser
     public ICollection<Budget> Budgets { get; set; } = new List<Budget>();
     public ICollection<SavingsGoal> SavingsGoals { get; set; } = new List<SavingsGoal>();
     public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new List<RecurringTransaction>();
+    public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public ICollection<PasswordResetToken> PasswordResetTokens { get; set; } = new List<PasswordResetToken>();
 }

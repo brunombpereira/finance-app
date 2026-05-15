@@ -6,6 +6,7 @@ import {
   LogOut,
   Moon,
   Repeat,
+  Settings,
   Sun,
   Tags,
   Target,
@@ -121,6 +122,13 @@ export function Layout() {
               </p>
               <p className="truncate text-xs text-slate-400 dark:text-slate-500">{user?.email}</p>
             </div>
+            <NavLink
+              to="/settings"
+              title="Definições"
+              className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-200 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+            >
+              <Settings size={18} />
+            </NavLink>
             <button
               onClick={logout}
               title="Sair"
@@ -142,6 +150,13 @@ export function Layout() {
           <Logo />
           <div className="flex items-center gap-1">
             <ThemeToggle />
+            <NavLink
+              to="/settings"
+              title="Definições"
+              className="rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"
+            >
+              <Settings size={20} />
+            </NavLink>
             <button
               onClick={logout}
               className="group/btn rounded-lg p-2 text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-700 dark:hover:text-slate-100"

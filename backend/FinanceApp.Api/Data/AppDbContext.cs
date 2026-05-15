@@ -15,6 +15,8 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Budget> Budgets => Set<Budget>();
     public DbSet<SavingsGoal> SavingsGoals => Set<SavingsGoal>();
     public DbSet<RecurringTransaction> RecurringTransactions => Set<RecurringTransaction>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<PasswordResetToken> PasswordResetTokens => Set<PasswordResetToken>();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -119,6 +121,24 @@ public class AppDbContext : IdentityDbContext<AppUser>
                 .HasForeignKey(r => r.AccountId)
                 .OnDelete(DeleteBehavior.Restrict);
             e.HasIndex(r => new { r.UserId, r.Active });
+        });
+
+        builder.Entity<RefreshToken>(e =>
+        {
+            e.HasOne(t => t.User)
+                .WithMany(u => u.RefreshTokens)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(t => t.Token).IsUnique();
+        });
+
+        builder.Entity<PasswordResetToken>(e =>
+        {
+            e.HasOne(t => t.User)
+                .WithMany(u => u.PasswordResetTokens)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+            e.HasIndex(t => t.Token).IsUnique();
         });
     }
 }

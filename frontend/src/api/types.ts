@@ -4,6 +4,7 @@ export type AccountType = 'Checking' | 'Savings' | 'Cash' | 'CreditCard'
 
 export interface AuthResponse {
   token: string
+  refreshToken: string
   email: string
   displayName: string
   expiresAt: string

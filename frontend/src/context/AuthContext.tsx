@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
-import { api, getToken, setToken } from '../api/client'
+import { api, clearTokens, getRefreshToken, getToken, setTokens } from '../api/client'
 import type { AuthResponse } from '../api/types'
 
 interface AuthState {
@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthState | null>(readStoredUser)
 
   const persist = useCallback((res: AuthResponse) => {
-    setToken(res.token)
+    setTokens(res.token, res.refreshToken)
     const state: AuthState = { email: res.email, displayName: res.displayName }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
     setUser(state)
@@ -66,7 +66,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const logout = useCallback(() => {
-    setToken(null)
+    const refreshToken = getRefreshToken()
+    // Best-effort server-side revoke; don't block the UI on it.
+    if (refreshToken) {
+      api('/auth/logout', { method: 'POST', body: { refreshToken }, auth: false }).catch(
+        () => {},
+      )
+    }
+    clearTokens()
     localStorage.removeItem(STORAGE_KEY)
     setUser(null)
   }, [])

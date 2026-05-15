@@ -278,3 +278,30 @@ export function useDashboard() {
     queryFn: () => api<DashboardSummary>('/dashboard/summary'),
   })
 }
+
+/* ---------- Password ---------- */
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (email: string) =>
+      api<{ message: string }>('/auth/forgot-password', {
+        method: 'POST',
+        body: { email },
+        auth: false,
+      }),
+  })
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (input: { token: string; newPassword: string }) =>
+      api<void>('/auth/reset-password', { method: 'POST', body: input, auth: false }),
+  })
+}
+
+export function useChangePassword() {
+  return useMutation({
+    mutationFn: (input: { currentPassword: string; newPassword: string }) =>
+      api<void>('/auth/change-password', { method: 'POST', body: input }),
+  })
+}

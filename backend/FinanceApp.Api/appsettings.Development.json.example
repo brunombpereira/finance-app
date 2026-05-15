@@ -10,5 +10,8 @@
   },
   "Jwt": {
     "Key": "GERAR-COM: openssl rand -base64 48"
+  },
+  "App": {
+    "FrontendUrl": "http://localhost:5173"
   }
 }
