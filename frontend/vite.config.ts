@@ -38,5 +38,7 @@ export default defineConfig({
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
     css: false,
+    // Vitest runs unit/component tests in src/. Playwright owns everything under e2e/.
+    exclude: ['node_modules', 'dist', 'e2e'],
   },
 })
