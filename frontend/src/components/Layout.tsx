@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import {
   ArrowLeftRight,
+  BarChart3,
   Landmark,
   LayoutDashboard,
   LogOut,
@@ -33,6 +34,7 @@ const navItems: NavItem[] = [
   { to: '/budgets', label: 'Orçamentos', icon: Wallet, end: false },
   { to: '/goals', label: 'Metas', icon: Target, end: false },
   { to: '/investments', label: 'Investimentos', icon: TrendingUp, end: false },
+  { to: '/reports', label: 'Relatórios', icon: BarChart3, end: false },
   { to: '/categories', label: 'Categorias', icon: Tags, end: false },
 ]
 

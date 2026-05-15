@@ -260,3 +260,31 @@ export interface InvestmentsSummary {
   items: Investment[]
   totals: CurrencyTotal[]
 }
+
+export interface CategoryAmount {
+  categoryId: number
+  name: string
+  color: string
+  amount: number
+}
+
+export interface MonthlyTotal {
+  year: number
+  month: number
+  income: number
+  expense: number
+}
+
+export interface ReportSummary {
+  from: string
+  to: string
+  totalIncome: number
+  totalExpense: number
+  net: number
+  prevTotalIncome: number
+  prevTotalExpense: number
+  prevNet: number
+  monthly: MonthlyTotal[]
+  topExpenses: CategoryAmount[]
+  topIncome: CategoryAmount[]
+}

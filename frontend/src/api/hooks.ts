@@ -12,6 +12,7 @@ import type {
   InvestmentsSummary,
   PagedTransactions,
   RecurringTransaction,
+  ReportSummary,
   RecurringTransactionInput,
   SavingsGoal,
   SavingsGoalInput,
@@ -305,6 +306,16 @@ export function useDeleteInvestment() {
       qc.invalidateQueries({ queryKey: ['investments'] })
       qc.invalidateQueries({ queryKey: ['dashboard'] })
     },
+  })
+}
+
+/* ---------- Reports ---------- */
+
+export function useReports(from: string, to: string) {
+  return useQuery({
+    queryKey: ['reports', from, to],
+    queryFn: () => api<ReportSummary>(`/reports?from=${from}&to=${to}`),
+    enabled: Boolean(from) && Boolean(to),
   })
 }
 

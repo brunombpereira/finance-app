@@ -26,6 +26,7 @@ const Goals = lazy(() => import('./pages/Goals').then((m) => ({ default: m.Goals
 const Investments = lazy(() =>
   import('./pages/Investments').then((m) => ({ default: m.Investments })),
 )
+const Reports = lazy(() => import('./pages/Reports').then((m) => ({ default: m.Reports })))
 const Categories = lazy(() =>
   import('./pages/Categories').then((m) => ({ default: m.Categories })),
 )
@@ -71,6 +72,7 @@ export default function App() {
                       <Route path="budgets" element={<Budgets />} />
                       <Route path="goals" element={<Goals />} />
                       <Route path="investments" element={<Investments />} />
+                      <Route path="reports" element={<Reports />} />
                       <Route path="categories" element={<Categories />} />
                       <Route path="recurring" element={<Recurring />} />
                       <Route path="settings" element={<Settings />} />
